@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "strict": false,          // disables all strict type checks
+    "strict": true,          // disables all strict type checks
     "noImplicitAny": false,   // allows variables without types
     "esModuleInterop": true,
     "module": "commonjs",
