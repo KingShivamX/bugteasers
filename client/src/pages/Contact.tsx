@@ -1,11 +1,7 @@
 import { 
   Mail, 
   Phone, 
-  MapPin, 
-  Send,
-  MessageCircle,
-  Clock,
-  CheckCircle
+  Send
 } from 'lucide-react';
 import { useState } from 'react';
 

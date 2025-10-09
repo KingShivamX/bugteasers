@@ -1,11 +1,11 @@
-import { 
-  Code, 
-  Brain, 
-  Users, 
-  BarChart3, 
-  Zap, 
-  Shield, 
-  CheckCircle, 
+import {
+  Code,
+  Brain,
+  Users,
+  BarChart3,
+  Zap,
+  Shield,
+  CheckCircle,
   ArrowRight,
   Play,
   Star
@@ -21,13 +21,13 @@ const LandingPage = () => {
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Bridge the Gap Between
-              
+
             </h1>
             <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Logic and Code
-              </span>
+              Logic and Code
+            </span>
             <p className="text-xl text-gray-600 mb-8 mt-2 max-w-3xl mx-auto">
-              Revolutionary AI-powered platform that transforms computer science education. 
+              Revolutionary AI-powered platform that transforms computer science education.
               Get instant feedback, personalized hints, and real-time assistance while learning to code.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -52,11 +52,11 @@ const LandingPage = () => {
               The Core Challenges in Learning to Code
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Students understand the logic but struggle to translate it into error-free code. 
+              Students understand the logic but struggle to translate it into error-free code.
               We're here to bridge that gap.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
               <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-6">
@@ -69,7 +69,7 @@ const LandingPage = () => {
                 Students understand the logic but get stuck translating that logic into error-free, working code.
               </p>
             </div>
-            
+
             <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
               <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-6">
                 <BarChart3 className="h-6 w-6 text-yellow-600" />
@@ -81,7 +81,7 @@ const LandingPage = () => {
                 After learning concepts, students struggle to find curated problems that reinforce specific skills.
               </p>
             </div>
-            
+
             <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
                 <Users className="h-6 w-6 text-blue-600" />
@@ -105,7 +105,7 @@ const LandingPage = () => {
               Our Solution: AI-Powered Learning
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              A comprehensive platform that combines real-time AI assistance with powerful analytics 
+              A comprehensive platform that combines real-time AI assistance with powerful analytics
               to revolutionize how students learn to code.
             </p>
           </div>
@@ -160,7 +160,7 @@ const LandingPage = () => {
               <h4 className="text-lg font-semibold text-gray-900 mb-2">AI Problem Generation</h4>
               <p className="text-gray-600">Auto-generate coding assignments tailored to course topics</p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BarChart3 className="h-8 w-8 text-purple-600" />
@@ -168,7 +168,7 @@ const LandingPage = () => {
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Analytics Dashboard</h4>
               <p className="text-gray-600">Track student progress and identify weak areas in real-time</p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-8 w-8 text-green-600" />
@@ -176,7 +176,7 @@ const LandingPage = () => {
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Secure Platform</h4>
               <p className="text-gray-600">Role-based access with privacy and authentication controls</p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Zap className="h-8 w-8 text-yellow-600" />
@@ -220,7 +220,7 @@ const LandingPage = () => {
               What Educators Are Saying
             </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <div className="flex items-center mb-4">
@@ -241,7 +241,7 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <div className="flex items-center mb-4">
                 {[...Array(5)].map((_, i) => (
@@ -261,7 +261,7 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white p-8 rounded-xl shadow-lg">
               <div className="flex items-center mb-4">
                 {[...Array(5)].map((_, i) => (
