@@ -8,22 +8,16 @@ import {
 } from './types';
 import { SYSTEM_PROMPT, buildProblemGenerationPrompt } from './prompt-templates';
 
-// Initialize Gemini
+// Initialize Gemini with API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function generateProblems(
   request: ProblemGenerationRequest
 ): Promise<ProblemGenerationResponse> {
   try {
-    // Use Gemini 1.5 Pro for best results
+    // Use Gemini 1.5 Flash (available in current API)
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-pro',
-      generationConfig: {
-        temperature: 0.7,
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 8192,
-      },
+      model: 'gemini-1.5-flash',
     });
 
     // Build the prompt
@@ -53,7 +47,7 @@ export async function generateProblems(
       problems: parsedResponse.problems,
       metadata: {
         generated_at: new Date().toISOString(),
-        model: 'gemini-pro',
+        model: 'gemini-1.5-flash',
       },
     };
   } catch (error) {
@@ -130,7 +124,7 @@ export async function regenerateProblemSection(
   problem: GeneratedProblem,
   section: 'hints' | 'test_cases' | 'description' | 'starter_code'
 ): Promise<Partial<GeneratedProblem>> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
   const prompts = {
     hints: `Given this coding problem, generate 3-4 progressive hints that guide students without giving away the solution:
