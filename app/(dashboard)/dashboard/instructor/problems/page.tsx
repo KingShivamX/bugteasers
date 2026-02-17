@@ -71,7 +71,7 @@ export default function ProblemsPage() {
         ) : problems.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-[var(--text-secondary)] mb-4">
-              You haven't created any problems yet
+              You haven&apos;t created any problems yet
             </p>
             <button
               onClick={() => router.push('/dashboard/instructor/problems/new')}

@@ -22,13 +22,13 @@ export default function GeneratedProblemPreview({
 
   const currentProblem = problems[selectedIndex];
 
-  const updateProblem = (field: keyof GeneratedProblem, value: any) => {
+  const updateProblem = (field: keyof GeneratedProblem, value: unknown) => {
     setProblems((prev) =>
       prev.map((p, i) => (i === selectedIndex ? { ...p, [field]: value } : p))
     );
   };
 
-  const updateTestCase = (index: number, field: string, value: any) => {
+  const updateTestCase = (index: number, field: string, value: unknown) => {
     const updatedTestCases = [...currentProblem.test_cases];
     updatedTestCases[index] = { ...updatedTestCases[index], [field]: value };
     updateProblem('test_cases', updatedTestCases);
