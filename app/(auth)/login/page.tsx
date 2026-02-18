@@ -24,16 +24,20 @@ function LoginForm() {
     setLoading(true)
 
     try {
-      const { profile } = await signIn(email, password)
+      const res = await signIn(email, password)
+      
+      if (res.error) {
+        throw new Error(res.error)
+      }
+
       toast('Welcome back!', 'success')
 
       if (redirectTo) {
         router.push(redirectTo)
       } else {
-        const dest = profile?.role === 'instructor'
-          ? '/dashboard/instructor'
-          : '/dashboard/student'
-        router.push(dest)
+        // Redirect to student dashboard by default.
+        // If the user is an instructor, the student dashboard will automatically redirect them.
+        router.push('/dashboard/student')
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Sign in failed'

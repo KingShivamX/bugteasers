@@ -13,9 +13,13 @@ export const authOptions: NextAuthOptions = {
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
+                console.log('[AUTH DEBUG] authorize() called')
                 if (!credentials?.email || !credentials?.password) {
+                    console.log('[AUTH DEBUG] Missing credentials')
                     throw new Error('Email and password are required')
                 }
+
+                console.log('[AUTH DEBUG] Looking up user:', credentials.email.toLowerCase().trim())
 
                 // Look up user from the public.users table
                 const { data: user, error } = await supabase
@@ -24,9 +28,16 @@ export const authOptions: NextAuthOptions = {
                     .eq('email', credentials.email.toLowerCase().trim())
                     .single()
 
-                if (error || !user) {
+                if (error) {
+                    console.log('[AUTH DEBUG] Supabase error:', JSON.stringify(error))
+                }
+                if (!user) {
+                    console.log('[AUTH DEBUG] No user found for email')
                     throw new Error('Invalid email or password')
                 }
+
+                console.log('[AUTH DEBUG] User found, id:', user.id, 'role:', user.role)
+                console.log('[AUTH DEBUG] password_hash exists:', !!user.password_hash, 'length:', user.password_hash?.length)
 
                 // Verify password
                 const isValidPassword = await bcrypt.compare(
@@ -34,11 +45,14 @@ export const authOptions: NextAuthOptions = {
                     user.password_hash
                 )
 
+                console.log('[AUTH DEBUG] Password valid:', isValidPassword)
+
                 if (!isValidPassword) {
                     throw new Error('Invalid email or password')
                 }
 
                 // Return user object that NextAuth will encode into the JWT
+                console.log('[AUTH DEBUG] Returning user object successfully')
                 return {
                     id: user.id,
                     email: user.email,

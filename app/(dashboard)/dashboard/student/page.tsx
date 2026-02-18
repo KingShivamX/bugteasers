@@ -1,9 +1,13 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth/auth-context'
 import { FullPageLoader } from '@/components/ui/loading'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/toast'
+import Link from 'next/link'
 
 const stats = [
   {
@@ -55,49 +59,73 @@ const stats = [
   },
 ]
 
-const quickActions = [
-  {
-    label: 'Browse Problems',
-    description: 'Find challenges to solve',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="8" />
-        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-      </svg>
-    ),
-  },
-  {
-    label: 'View Profile',
-    description: 'Update your information',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Leaderboard',
-    description: 'See how you compare',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="18" y1="20" x2="18" y2="10" />
-        <line x1="12" y1="20" x2="12" y2="4" />
-        <line x1="6" y1="20" x2="6" y2="14" />
-      </svg>
-    ),
-  },
-]
-
 export default function StudentDashboard() {
   const { profile, loading, initialized } = useAuth()
   const router = useRouter()
+  const { toast } = useToast()
+
+  const [classrooms, setClassrooms] = useState<any[]>([])
+  const [loadingClassrooms, setLoadingClassrooms] = useState(true)
+  const [showJoinModal, setShowJoinModal] = useState(false)
+  const [joinCode, setJoinCode] = useState('')
+  const [joining, setJoining] = useState(false)
 
   useEffect(() => {
     if (!initialized || loading) return
     if (!profile) { router.replace('/login'); return }
     if (profile.role === 'instructor') { router.replace('/dashboard/instructor'); return }
   }, [profile, loading, initialized, router])
+
+  useEffect(() => {
+    if (profile?.role === 'student') {
+        fetchClassrooms()
+    }
+  }, [profile])
+
+  const fetchClassrooms = async () => {
+    try {
+        const res = await fetch('/api/classrooms')
+        const data = await res.json()
+        if (res.ok) {
+            setClassrooms(data.classrooms || [])
+        }
+    } catch (error) {
+        console.error('Failed to fetch classrooms', error)
+    } finally {
+        setLoadingClassrooms(false)
+    }
+  }
+
+  const handleJoinClassroom = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!joinCode.trim()) {
+        toast('Please enter a join code', 'warning')
+        return
+    }
+
+    setJoining(true)
+    try {
+        const res = await fetch('/api/classrooms/join', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ join_code: joinCode })
+        })
+        const data = await res.json()
+
+        if (res.ok) {
+            toast('Successfully joined classroom!', 'success')
+            setShowJoinModal(false)
+            setJoinCode('')
+            fetchClassrooms() // Refresh list
+        } else {
+            toast(data.error || 'Failed to join', 'error')
+        }
+    } catch {
+        toast('Network error', 'error')
+    } finally {
+        setJoining(false)
+    }
+  }
 
   if (!initialized || loading || !profile || profile.role !== 'student') {
     return <FullPageLoader />
@@ -151,47 +179,159 @@ export default function StudentDashboard() {
       {/* ── Main Content Grid ── */}
       <div className="grid lg:grid-cols-5 gap-6">
 
-        {/* Recent Activity */}
+        {/* My Classrooms (Replaces Recent Activity) */}
         <div className="lg:col-span-3 bg-white border border-[var(--border-primary)] rounded-xl p-6">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)]">Recent Activity</h2>
+            <h2 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)]">My Classrooms</h2>
+            {classrooms.length > 0 && (
+                <button onClick={() => setShowJoinModal(true)} className="text-xs font-bold text-[var(--accent-primary)] hover:underline cursor-pointer">
+                    + Join New
+                </button>
+            )}
           </div>
-          <div className="flex flex-col items-center justify-center py-14 text-center">
-            <div className="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-            </div>
-            <p className="text-sm font-semibold text-[var(--text-secondary)]">No activity yet</p>
-            <p className="text-xs text-[var(--text-muted)] mt-1 max-w-xs">Start solving problems to see your progress here</p>
-          </div>
+          
+          {loadingClassrooms ? (
+             <div className="flex justify-center py-10">
+                <div className="h-6 w-6 rounded-full border-2 border-[var(--bg-tertiary)] border-t-[var(--accent-primary)] animate-spin" />
+             </div>
+          ) : classrooms.length === 0 ? (
+             <div className="flex flex-col items-center justify-center py-10 text-center">
+                <div className="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-semibold text-[var(--text-secondary)]">No classrooms joined</p>
+                <p className="text-xs text-[var(--text-muted)] mt-1 max-w-xs mb-4">Join a classroom to access assignments and track your progress.</p>
+                <Button size="sm" onClick={() => setShowJoinModal(true)}>Join Classroom</Button>
+             </div>
+          ) : (
+             <div className="space-y-3">
+                {classrooms.map((c: any) => (
+                    <div key={c.id} className="group flex items-center justify-between p-3 rounded-xl border border-[var(--border-primary)] hover:border-[var(--accent-primary)] transition-all bg-[var(--bg-secondary)]/30">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-white border border-[var(--border-primary)] flex items-center justify-center text-[var(--accent-primary)] font-bold text-lg">
+                                {c.classroom?.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-sm text-[var(--text-primary)]">{c.classroom?.name}</h3>
+                                <p className="text-xs text-[var(--text-muted)]">Joined {new Date(c.joined_at).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        <div className="text-xs font-semibold text-[var(--text-muted)] group-hover:text-[var(--accent-primary)] transition-colors">
+                            View →
+                        </div>
+                    </div>
+                ))}
+             </div>
+          )}
         </div>
 
         {/* Quick Actions */}
         <div className="lg:col-span-2 bg-white border border-[var(--border-primary)] rounded-xl p-6">
           <h2 className="text-sm font-black uppercase tracking-wider text-[var(--text-primary)] mb-5">Quick Actions</h2>
           <div className="flex flex-col gap-1">
-            {quickActions.map((action) => (
-              <button
-                key={action.label}
+            {/* Join Classroom Action */}
+            <button
+                onClick={() => setShowJoinModal(true)}
                 className="flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--bg-secondary)] transition-colors group text-left w-full cursor-pointer"
-              >
+            >
                 <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)] group-hover:bg-[var(--accent-primary)] group-hover:text-white group-hover:border-[var(--accent-primary)] transition-all flex-shrink-0">
-                  {action.icon}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="8.5" cy="7" r="4" />
+                        <line x1="20" y1="8" x2="20" y2="14" />
+                        <line x1="23" y1="11" x2="17" y2="11" />
+                    </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">{action.label}</p>
-                  <p className="text-xs text-[var(--text-muted)]">{action.description}</p>
+                   <p className="text-sm font-semibold text-[var(--text-primary)]">Join Classroom</p>
+                   <p className="text-xs text-[var(--text-muted)]">Enter a code to join</p>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                  <polyline points="9 18 15 12 9 6" />
+                   <polyline points="9 18 15 12 9 6" />
                 </svg>
-              </button>
-            ))}
+            </button>
+
+            {/* Browse Problems */}
+            <Link
+                href="/dashboard/student/problems"
+                className="flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--bg-secondary)] transition-colors group text-left w-full cursor-pointer"
+            >
+                <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)] group-hover:bg-[var(--accent-primary)] group-hover:text-white group-hover:border-[var(--accent-primary)] transition-all flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </div>
+                <div>
+                   <p className="text-sm font-semibold text-[var(--text-primary)]">Browse Problems</p>
+                   <p className="text-xs text-[var(--text-muted)]">Find challenges to solve</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                   <polyline points="9 18 15 12 9 6" />
+                </svg>
+            </Link>
+
+            {/* Leaderboard */}
+            <button
+                className="flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--bg-secondary)] transition-colors group text-left w-full cursor-pointer"
+            >
+                <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)] group-hover:bg-[var(--accent-primary)] group-hover:text-white group-hover:border-[var(--accent-primary)] transition-all flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                </div>
+                <div>
+                   <p className="text-sm font-semibold text-[var(--text-primary)]">Leaderboard</p>
+                   <p className="text-xs text-[var(--text-muted)]">See how you compare</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                   <polyline points="9 18 15 12 9 6" />
+                </svg>
+            </button>
           </div>
         </div>
       </div>
+
+        {/* Join Classroom Modal */}
+        {showJoinModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/40 animate-fade-in" onClick={() => setShowJoinModal(false)} />
+                <div className="relative w-full max-w-md mx-4 bg-white rounded-2xl border-2 border-[var(--border-primary)] animate-slide-up p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-[var(--text-primary)]">Join Classroom</h2>
+                        <button onClick={() => setShowJoinModal(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+                    <form onSubmit={handleJoinClassroom}>
+                        <p className="text-sm text-[var(--text-secondary)] mb-4">
+                            Enter the 6-character code provided by your instructor to join their classroom.
+                        </p>
+                        <Input
+                            placeholder="Enter Join Code (e.g. A1B2C3)"
+                            value={joinCode}
+                            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                            className="mb-6 uppercase font-mono tracking-widest text-center text-lg"
+                            maxLength={8}
+                            required
+                        />
+                        <div className="flex justify-end gap-3">
+                            <Button type="button" variant="secondary" onClick={() => setShowJoinModal(false)}>Cancel</Button>
+                            <Button type="submit" loading={joining}>
+                                Join Classroom
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
     </div>
   )
 }
