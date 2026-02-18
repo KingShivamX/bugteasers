@@ -66,7 +66,7 @@ export async function GET(
     // Transform data
     const assignments = classroomAssignments?.map(ca => ({
       ...ca.assignment,
-      problem_count: (ca.assignment as any).assignment_problems?.[0]?.count || 0,
+      problem_count: (ca.assignment as unknown as { assignment_problems: { count: number }[] }).assignment_problems?.[0]?.count || 0,
       assigned_at: ca.assigned_at,
     })) || [];
 

@@ -12,8 +12,8 @@ import { java } from '@codemirror/lang-java';
 import { cpp } from '@codemirror/lang-cpp';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { EditorView, keymap } from '@codemirror/view';
-import { indentWithTab } from '@codemirror/commands';
-import { EditorState } from '@codemirror/state';
+import { indentWithTab, insertNewlineAndIndent } from '@codemirror/commands';
+import { EditorState, Prec } from '@codemirror/state';
 import { indentUnit } from '@codemirror/language';
 
 interface TestCase {
@@ -120,6 +120,12 @@ export default function SolveProblemPage() {
     '.cm-activeLineGutter': { background: '#2a2d32' },
     '.cm-activeLine': { background: '#2a2d3220' },
   }), []);
+
+  // Highest-priority keymap: Tab inserts indent, Enter preserves indentation
+  const editorKeymapExt = useMemo(() => Prec.highest(keymap.of([
+    indentWithTab,
+    { key: 'Enter', run: insertNewlineAndIndent, shift: insertNewlineAndIndent },
+  ])), []);
 
   const handleRun = async () => {
     setIsRunning(true);
@@ -352,18 +358,20 @@ export default function SolveProblemPage() {
           </div>
         </div>
 
-        {/* CodeMirror Editor */}
-        <div className="flex-1 flex flex-col overflow-hidden relative">
-          <div className="flex-1 overflow-hidden">
+        {/* CodeMirror Editor — Tab inserts indent, Enter preserves indentation */}
+        <div className="flex-1 flex flex-col overflow-hidden relative" style={{ minHeight: 0 }}>
+          <div className="flex-1 overflow-hidden min-h-0" tabIndex={-1}>
             <CodeMirror
               value={code || ''}
               onChange={(val) => setCode(val)}
+              indentWithTab={true}
+              autoFocus={true}
               extensions={[
+                editorKeymapExt,
                 languageExtension, 
                 editorThemeExt, 
-                keymap.of([indentWithTab]),
                 EditorState.tabSize.of(4),
-                indentUnit.of("    ")
+                indentUnit.of('    '),
               ]}
               theme={vscodeDark}
               height="100%"
