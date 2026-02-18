@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function AuthLayout({
   children,
@@ -18,7 +19,7 @@ export default function AuthLayout({
         <div className="relative z-10 flex flex-col items-center gap-12">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
-            <img src="/favicon.png" alt="CodeGuruAI" className="h-10 w-10 object-contain" />
+            <Image src="/favicon.png" alt="CodeGuruAI" width={40} height={40} className="object-contain" />
             <span className="text-xl font-black text-white tracking-tight">CodeGuruAI</span>
           </Link>
 
@@ -63,7 +64,7 @@ export default function AuthLayout({
           {/* Mobile logo */}
           <div className="lg:hidden mb-6">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <img src="/favicon.png" alt="CodeGuruAI" className="h-9 w-9 object-contain" />
+              <Image src="/favicon.png" alt="CodeGuruAI" width={36} height={36} className="object-contain" />
               <span className="text-lg font-black tracking-tight text-[var(--text-primary)]">
                 CodeGuru<span className="text-[var(--accent-primary)]">AI</span>
               </span>

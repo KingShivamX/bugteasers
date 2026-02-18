@@ -7,7 +7,6 @@ import { FullPageLoader } from '@/components/ui/loading'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/toast'
-import Link from 'next/link'
 
 const stats = [
   {
@@ -64,7 +63,7 @@ export default function StudentDashboard() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const [classrooms, setClassrooms] = useState<any[]>([])
+  const [classrooms, setClassrooms] = useState<{ id: string; classroom?: { id: string; name: string }; joined_at: string }[]>([])
   const [loadingClassrooms, setLoadingClassrooms] = useState(true)
   const [showJoinModal, setShowJoinModal] = useState(false)
   const [joinCode, setJoinCode] = useState('')
@@ -207,14 +206,18 @@ export default function StudentDashboard() {
              </div>
           ) : (
              <div className="space-y-3">
-                {classrooms.map((c: any) => (
-                    <div key={c.id} className="group flex items-center justify-between p-3 rounded-xl border border-[var(--border-primary)] hover:border-[var(--accent-primary)] transition-all bg-[var(--bg-secondary)]/30">
+                {classrooms.map((c) => (
+                    <div
+                        key={c.id}
+                        onClick={() => router.push(`/dashboard/student/classrooms/${c.classroom?.id}`)}
+                        className="group flex items-center justify-between p-3 rounded-xl border border-[var(--border-primary)] hover:border-[var(--accent-primary)] transition-all bg-[var(--bg-secondary)]/30 cursor-pointer"
+                    >
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-white border border-[var(--border-primary)] flex items-center justify-center text-[var(--accent-primary)] font-bold text-lg">
-                                {c.classroom?.name.charAt(0)}
+                                {c.classroom?.name?.charAt(0) || '?'}
                             </div>
                             <div>
-                                <h3 className="font-bold text-sm text-[var(--text-primary)]">{c.classroom?.name}</h3>
+                                <h3 className="font-bold text-sm text-[var(--text-primary)]">{c.classroom?.name || 'Unknown'}</h3>
                                 <p className="text-xs text-[var(--text-muted)]">Joined {new Date(c.joined_at).toLocaleDateString()}</p>
                             </div>
                         </div>
@@ -253,12 +256,11 @@ export default function StudentDashboard() {
                 </svg>
             </button>
 
-            {/* Browse Problems */}
-            <Link
-                href="/dashboard/student/problems"
-                className="flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--bg-secondary)] transition-colors group text-left w-full cursor-pointer"
+            {/* Browse Problems — Coming Soon */}
+            <div
+                className="flex items-center gap-3 p-3 rounded-xl opacity-50 cursor-not-allowed text-left w-full"
             >
-                <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)] group-hover:bg-[var(--accent-primary)] group-hover:text-white group-hover:border-[var(--accent-primary)] transition-all flex-shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)] flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -266,18 +268,16 @@ export default function StudentDashboard() {
                 </div>
                 <div>
                    <p className="text-sm font-semibold text-[var(--text-primary)]">Browse Problems</p>
-                   <p className="text-xs text-[var(--text-muted)]">Find challenges to solve</p>
+                   <p className="text-xs text-[var(--text-muted)]">Coming Soon</p>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                   <polyline points="9 18 15 12 9 6" />
-                </svg>
-            </Link>
+                <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-secondary)] px-2 py-0.5 rounded border border-[var(--border-primary)]">Soon</span>
+            </div>
 
-            {/* Leaderboard */}
-            <button
-                className="flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--bg-secondary)] transition-colors group text-left w-full cursor-pointer"
+            {/* Leaderboard — Coming Soon */}
+            <div
+                className="flex items-center gap-3 p-3 rounded-xl opacity-50 cursor-not-allowed text-left w-full"
             >
-                <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)] group-hover:bg-[var(--accent-primary)] group-hover:text-white group-hover:border-[var(--accent-primary)] transition-all flex-shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--text-muted)] flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="18" y1="20" x2="18" y2="10" />
                         <line x1="12" y1="20" x2="12" y2="4" />
@@ -286,12 +286,10 @@ export default function StudentDashboard() {
                 </div>
                 <div>
                    <p className="text-sm font-semibold text-[var(--text-primary)]">Leaderboard</p>
-                   <p className="text-xs text-[var(--text-muted)]">See how you compare</p>
+                   <p className="text-xs text-[var(--text-muted)]">Coming Soon</p>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                   <polyline points="9 18 15 12 9 6" />
-                </svg>
-            </button>
+                <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] bg-[var(--bg-secondary)] px-2 py-0.5 rounded border border-[var(--border-primary)]">Soon</span>
+            </div>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 export default function TestDbPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [message, setMessage] = useState('')
-  const [details, setDetails] = useState<any>(null)
+  const [details, setDetails] = useState<Record<string, unknown> | Error | null>(null)
   
   useEffect(() => {
     async function checkConnection() {
@@ -14,7 +14,7 @@ export default function TestDbPage() {
         const supabase = createClient()
         
         // 1. Check if we can talk to Supabase
-        const { data, error } = await supabase.from('profiles').select('count', { count: 'exact', head: true })
+        const { error } = await supabase.from('profiles').select('count', { count: 'exact', head: true })
         
         if (error) {
           // If the table doesn't exist, we might get a 404 or specific error, 
@@ -30,14 +30,15 @@ export default function TestDbPage() {
           profilesTableReachable: true
         })
         
-      } catch (err: any) {
+      } catch (err: unknown) {
         setStatus('error')
         // Differentiate between "Network Error" (not connected) and "Database Error" (connected but failing)
-        if (err.message === 'Failed to fetch') {
+        const message = err instanceof Error ? err.message : String(err)
+        if (message === 'Failed to fetch') {
            setMessage('Network Error: Could not reach Supabase. Check your internet or URL.')
         } else {
-           setMessage(`Connected to Supabase, but received error: ${err.message || err.code}`)
-           setDetails(err)
+           setMessage(`Connected to Supabase, but received error: ${message}`)
+           setDetails(err instanceof Error ? { message: err.message, name: err.name } : err)
         }
       }
     }

@@ -23,7 +23,7 @@ interface ProblemDetail {
   tags: string[];
   constraints: string | null;
   hints: string[] | null;
-  examples: any | null;
+  examples: unknown | null;
   test_cases: TestCase[];
   starter_code: Record<string, string> | null;
   solution_code: string | null;
@@ -74,7 +74,7 @@ export default function ProblemDetailPage() {
     if (params.id && profile?.role === 'instructor') {
       loadProblem();
     }
-  }, [params.id, profile?.role]);
+  }, [params.id, profile?.role]); // eslint-disable-line react-hooks/exhaustive-deps -- loadProblem depends on params.id
 
   const loadProblem = async () => {
     try {
@@ -167,7 +167,7 @@ export default function ProblemDetailPage() {
             </svg>
           </div>
           <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">{error || 'Problem not found'}</h2>
-          <p className="text-[var(--text-muted)] mb-6">This problem may have been deleted or you don't have access to it.</p>
+          <p className="text-[var(--text-muted)] mb-6">This problem may have been deleted or you don&apos;t have access to it.</p>
           <Button onClick={() => router.push('/dashboard/instructor/problems')}>
             Back to Problems
           </Button>

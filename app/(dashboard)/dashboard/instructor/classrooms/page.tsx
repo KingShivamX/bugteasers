@@ -5,12 +5,8 @@ import { useToast } from '@/components/ui/toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useEffect, useState, useCallback } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FullPageLoader } from '@/components/ui/loading'
 import type { Classroom } from '@/lib/types'
-
-const STRIPE_COLORS = ['bg-[var(--accent-primary)]', 'bg-[var(--accent-secondary)]', 'bg-[var(--accent-blue)]', 'bg-[var(--accent-tertiary)]']
 
 export default function ClassroomsPage() {
   const { profile, loading: authLoading, initialized } = useAuth()

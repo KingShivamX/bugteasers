@@ -38,7 +38,7 @@ export interface ProblemSubmission {
   code: string
   language: string
   status: 'pending' | 'passed' | 'failed'
-  test_results?: any
+  test_results?: unknown
   submitted_at: string
 }
 

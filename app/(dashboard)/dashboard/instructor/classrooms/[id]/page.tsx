@@ -45,7 +45,7 @@ export default function ClassroomDetailsPage() {
     if (profile?.role === 'instructor') {
       loadClassroomData();
     }
-  }, [profile?.role, params.id]);
+  }, [profile?.role, params.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadClassroomData = async () => {
     try {

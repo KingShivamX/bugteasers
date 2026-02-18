@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import { FullPageLoader } from '@/components/ui/loading';
-import { Button } from '@/components/ui/button';
 import type { Assignment } from '@/lib/types';
 
 interface ClassroomAssignment extends Assignment {
@@ -36,7 +35,7 @@ export default function StudentClassroomDetailsPage() {
     if (profile?.role === 'student') {
       loadClassroomData();
     }
-  }, [profile?.role, params.id]);
+  }, [profile?.role, params.id]); // eslint-disable-line react-hooks/exhaustive-deps -- loadClassroomData reads params.id
 
   const loadClassroomData = async () => {
     try {
@@ -57,7 +56,7 @@ export default function StudentClassroomDetailsPage() {
 
       if (classroomsRes.ok) {
         const data = await classroomsRes.json();
-        const enrolled = data.classrooms?.find((c: any) => c.classroom.id === params.id);
+        const enrolled = data.classrooms?.find((c: { classroom: { id: string } }) => c.classroom.id === params.id);
         if (enrolled) {
           setClassroom(enrolled.classroom);
         } else {

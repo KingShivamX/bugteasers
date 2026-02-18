@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth/auth-context'
 
@@ -13,7 +14,7 @@ export function Navbar() {
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <img src="/favicon.png" alt="CodeGuruAI" className="h-10 w-10 object-contain" />
+          <Image src="/favicon.png" alt="CodeGuruAI" width={40} height={40} className="object-contain" />
           <span className="text-lg font-black tracking-tight text-[var(--text-primary)]">
             CodeGuru<span className="text-[var(--accent-primary)]">AI</span>
           </span>

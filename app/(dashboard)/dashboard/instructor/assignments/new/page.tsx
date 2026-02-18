@@ -47,7 +47,7 @@ export default function NewAssignmentPage() {
     if (profile?.role === 'instructor') {
       loadData();
     }
-  }, [profile?.role]);
+  }, [profile?.role]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     try {

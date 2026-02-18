@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import { FullPageLoader } from '@/components/ui/loading';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/toast';
 import type { Assignment } from '@/lib/types';
 
@@ -45,7 +44,7 @@ export default function StudentAssignmentDetailsPage() {
     if (profile?.role === 'student') {
       loadAssignment();
     }
-  }, [profile?.role, params.id]);
+  }, [profile?.role, params.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadAssignment = async () => {
     try {

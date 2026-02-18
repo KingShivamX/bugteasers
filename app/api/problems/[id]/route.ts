@@ -47,7 +47,8 @@ export async function GET(
     }
 
     // Students: strip solution_code, only show sample test cases
-    const { solution_code, ...safeFields } = problem;
+    const safeFields = { ...problem };
+    delete (safeFields as Record<string, unknown>).solution_code;
     const sampleTestCases = (problem.test_cases || []).filter(
       (tc: { is_sample: boolean }) => tc.is_sample
     );

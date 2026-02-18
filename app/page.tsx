@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useAuth } from "@/lib/auth/auth-context"
 
 export default function LandingPage() {
@@ -36,7 +37,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
-                            <img src="/favicon.png" alt="CodeGuruAI" className="h-11 w-11 object-contain" />
+                            <Image src="/favicon.png" alt="CodeGuruAI" width={44} height={44} className="object-contain" />
                             <span className="text-xl font-black tracking-tight text-[var(--text-primary)]">
                                 CodeGuru<span className="text-[var(--accent-primary)]">AI</span>
                             </span>
@@ -190,7 +191,7 @@ export default function LandingPage() {
                             <span className="text-[var(--accent-primary)]">harder, not just faster.</span>
                         </h2>
                         <p className="text-[var(--text-secondary)] mt-4 text-base max-w-lg leading-relaxed">
-                            Most tools give you answers. We give you the question that leads to the answer — because that's what actually builds skill.
+                            Most tools give you answers. We give you the question that leads to the answer — because that&apos;s what actually builds skill.
                         </p>
                     </div>
 
@@ -324,7 +325,7 @@ export default function LandingPage() {
                         {/* Brand */}
                         <div className="max-w-xs">
                             <div className="flex items-center gap-3 mb-4">
-                                <img src="/favicon.png" alt="CodeGuruAI" className="h-9 w-9 object-contain" />
+                                <Image src="/favicon.png" alt="CodeGuruAI" width={36} height={36} className="object-contain" />
                                 <span className="text-lg font-black text-white tracking-tight">CodeGuruAI</span>
                             </div>
                             <p className="text-sm text-white/50 leading-relaxed">
