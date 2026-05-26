@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import type { SupportedLanguage } from "@/lib/execution/types";
 import { getCodeMirrorLanguageExtension } from "@/lib/execution/codemirror-language-extension";
 import { createEditableCodeMirrorTheme } from "@/lib/execution/codemirror-theme";
